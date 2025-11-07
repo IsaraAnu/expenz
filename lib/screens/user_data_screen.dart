@@ -1,4 +1,6 @@
 import 'package:expenz/constants/colors.dart';
+import 'package:expenz/screens/main_screen.dart';
+import 'package:expenz/services/user_services.dart';
 import 'package:expenz/widgets/custom_button.dart';
 import 'package:flutter/material.dart';
 
@@ -12,6 +14,7 @@ class UserDataScreen extends StatefulWidget {
 class _UserDataScreenState extends State<UserDataScreen> {
   // remember me for the next time
   bool _rememberMe = false;
+  bool _passwordVisibility = true;
 
   // fomr key for form validation
   final _formKey = GlobalKey<FormState>();
@@ -105,8 +108,20 @@ class _UserDataScreenState extends State<UserDataScreen> {
                           }
                         },
                         controller: _passwordController,
-                        obscureText: true,
+                        obscureText: _passwordVisibility,
                         decoration: InputDecoration(
+                          suffixIcon: IconButton(
+                            onPressed: () {
+                              setState(() {
+                                _passwordVisibility = !_passwordVisibility;
+                              });
+                            },
+                            icon: Icon(
+                              _passwordVisibility
+                                  ? Icons.visibility
+                                  : Icons.visibility_off,
+                            ),
+                          ),
                           hintText: 'Enter your password',
 
                           border: OutlineInputBorder(
@@ -124,8 +139,20 @@ class _UserDataScreenState extends State<UserDataScreen> {
                           }
                         },
                         controller: _confirmPasswordController,
-                        obscureText: true,
+                        obscureText: _passwordVisibility,
                         decoration: InputDecoration(
+                          suffixIcon: IconButton(
+                            onPressed: () {
+                              setState(() {
+                                _passwordVisibility = !_passwordVisibility;
+                              });
+                            },
+                            icon: Icon(
+                              _passwordVisibility
+                                  ? Icons.visibility
+                                  : Icons.visibility_off,
+                            ),
+                          ),
                           hintText: 'Confirm your password',
 
                           border: OutlineInputBorder(
@@ -161,18 +188,34 @@ class _UserDataScreenState extends State<UserDataScreen> {
                       SizedBox(height: 30),
                       //submit button
                       GestureDetector(
-                        onTap: () {
+                        onTap: () async {
                           if (_formKey.currentState!.validate()) {
                             // form is valid .process the data
                             String userName = _userNameController.text;
-                            String useEmail = _emailController.text;
+                            String userEmail = _emailController.text;
                             String password = _passwordController.text;
                             String confirmPassword =
                                 _confirmPasswordController.text;
 
-                            print(
-                              "$userName $useEmail $password $confirmPassword",
+                            // save the user name and email in the device storage
+                            await UserServices.storeUserDetails(
+                              userName: userName,
+                              Email: userEmail,
+                              password: password,
+                              confirmPassword: confirmPassword,
+                              context: context,
                             );
+                            // navigate to main screen
+                            if (context.mounted) {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) {
+                                    return const MainScreen();
+                                  },
+                                ),
+                              );
+                            }
                           }
                         },
                         child: CustomButton(
