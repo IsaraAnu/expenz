@@ -53,7 +53,7 @@ class _MainScreenState extends State<MainScreen> {
           BottomNavigationBarItem(
             icon: Container(
               decoration: BoxDecoration(
-                color: Colors.blueAccent,
+                color: kMainColor,
                 shape: BoxShape.circle,
               ),
 
