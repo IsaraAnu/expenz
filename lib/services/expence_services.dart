@@ -5,9 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ExpensesServices {
-  // expence list
-  List<Expense> expesesList = [];
-
   //define a key for store the data in shared preferences
   static const String _expenseKey = 'expenses';
 
