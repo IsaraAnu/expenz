@@ -107,7 +107,7 @@ class ExpensesServices {
         );
       }
     } catch (error) {
-      print('Error deleting expense: ${error.toString()}');
+      print('Error of deleting expense: ${error.toString()}');
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(

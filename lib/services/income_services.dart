@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:expenz/models/icnome_model.dart';
 import 'package:flutter/material.dart';
@@ -70,5 +71,51 @@ class IncomeServices {
           .toList();
     }
     return loadedIncome;
+  }
+
+  // delete an income from shared preferences by its id
+  Future<void> deleteIncome(int id, BuildContext context) async {
+    try {
+      // create instance of shared preferences
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      List<String>? existingIncome = prefs.getStringList(_incomeKey);
+
+      // convert the existing income to a list of Income objects
+      List<Income> existingIncomeObjects = [];
+      if (existingIncome != null) {
+        existingIncomeObjects = existingIncome
+            .map((e) => Income.fromJson(json.decode(e)))
+            .toList();
+      }
+      // remove the income with the given id
+      existingIncomeObjects.removeWhere((Income) => Income.id == id);
+
+      // convert the updated list of income objects to list of strings
+      List<String> updatedIncome = existingIncomeObjects
+          .map((e) => json.encode(e.toJson()))
+          .toList();
+
+      // save the updated income list to shared preferences
+      await prefs.setStringList(_incomeKey, updatedIncome);
+
+      // show message
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text("Income deleted successfully!"),
+            duration: Duration(seconds: 2),
+          ),
+        );
+      }
+    } catch (error) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Error deleting income. Please try again.'),
+            duration: Duration(seconds: 2),
+          ),
+        );
+      }
+    }
   }
 }
