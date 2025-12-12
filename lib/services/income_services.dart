@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:math';
 
 import 'package:expenz/models/icnome_model.dart';
 import 'package:flutter/material.dart';
@@ -112,6 +111,34 @@ class IncomeServices {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Error deleting income. Please try again.'),
+            duration: Duration(seconds: 2),
+          ),
+        );
+      }
+    }
+  }
+
+  // delete all the incomes from the sharedpreferences
+  Future<void> deleteAllIncomes(BuildContext context) async {
+    try {
+      SharedPreferences pref = await SharedPreferences.getInstance();
+      await pref.remove(_incomeKey);
+
+      //show a massage
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('All Incomes Deleted!.'),
+            duration: Duration(seconds: 2),
+          ),
+        );
+      }
+    } catch (error) {
+      print(error);
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Error on Incomes deleting!'),
             duration: Duration(seconds: 2),
           ),
         );
